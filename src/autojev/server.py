@@ -42,7 +42,6 @@ class Service:
     name: str = DEFAULT_MODEL
     checkpoint: str = "checkpoints/selected"
     release_date: str = ""
-    lock: LockType = field(default_factory=threading.Lock)
 
 
 service = Service()
@@ -201,8 +200,6 @@ async def system_one(body: EvaluationRequest) -> DecisionResponse:
         return await run_in_threadpool(predict, model, body)
     except ValueError as error:
         raise HTTPException(422, str(error)) from error
-    finally:
-        service.lock.release()
 
 
 def main() -> None:
