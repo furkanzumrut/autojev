@@ -196,8 +196,7 @@ async def system_one(body: EvaluationRequest) -> DecisionResponse:
     model = service.model
     if model is None:
         raise HTTPException(503, "The model is not ready.")
-    if not service.lock.acquire(blocking=False):
-        raise HTTPException(529, "The model is busy. Retry shortly.", headers={"Retry-After": "1"})
+
     try:
         return await run_in_threadpool(predict, model, body)
     except ValueError as error:
